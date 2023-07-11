@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 import pickle
 from datetime import datetime
+import fun
 
 take_packet_header = 0x5a #channel c packet header  数据通道（通道c）
 take_SOE_bit = 0x40 #start of event packet
@@ -469,6 +470,11 @@ def wavesave(): #波形打包处理，这里存储时没有区分x与y维
                  rr.append(rrr)
                  break
               break
+        
+   for i in range(len(pp)): #一阶滤波
+       for j in range(len(pp[i])):
+           pp[i][j]=fun.first_order_filter(pp[i][j], 0.2)
+
    m1=0
    m2=0
    m3=0
@@ -476,15 +482,15 @@ def wavesave(): #波形打包处理，这里存储时没有区分x与y维
    m5=0
    m6=0
    qqq1=0
-   shili=[]
+   #shili=[]
    for i in range(len(pp1)):
        if  max(bb[i])>600:
            qqq1+=1
-           shili.append(rr[i])
+           #shili.append(rr[i])
       # if len(pp1[i])>9 :
-       if len(pp1[i])>6 and len(pp1[i])<10: #and min(dd[i])>100:
+       if len(pp1[i])>6 and len(pp1[i])<10: 
            m1+=1
-           print('1',rr[i])
+           print('大于',rr[i])
            print(i,pp1[i])
        if len(pp1[i])<2:
            m2+=1
@@ -497,7 +503,7 @@ def wavesave(): #波形打包处理，这里存储时没有区分x与y维
        if len(pp1[i])==5:
            m6+=1  
    print('600以后:',qqq1)  
-   #print(shili)            
+           
    print('>5:',m1)
    print('<2:',m2)
    print('2:',m3)
